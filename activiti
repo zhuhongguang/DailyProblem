@@ -1,0 +1,43 @@
+public static String startBGFlow(Map<String, String> map) throws Exception {
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		RepositoryService repositoryService = processEngine.getRepositoryService();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+
+		String lstrProcessID = deployFunctionFlow(map, repositoryService);
+
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.putAll(map);
+
+		convertFields(map, variables);
+
+		String lstrSLAID = UUIDGenerator.getInstance().generateUUID();
+		variables.put(SLAVariables.C_SLA_ID, lstrSLAID);
+
+		String lstrCurrentGMTDateTime = DateTimeUtils.getCurrentGMTDateTimeString();
+		variables.put(SLAVariables.D_INITLINE, lstrCurrentGMTDateTime);
+
+		//EE-8650 add bill huang 2017-02-27 - begin
+		map.put(SLAVariables.C_SLA_ID, lstrSLAID);
+		map.put(SLAVariables.D_INITLINE, lstrCurrentGMTDateTime);
+		//EE-8650 add bill huang 2017-02-27 - end
+
+		//EE-8740 add bill huang 2017-05-21 - begin
+		variables.put(SLAVariables.C_SLA_ID, lstrSLAID);
+		variables.put(SLAVariables.D_INITLINE, lstrCurrentGMTDateTime);
+		/*@ref EE-8740_1  @date 2017-06-09 @author tyrion add-S */
+//		variables.put(SLAVariables.SLACreateTime, lstrCurrentGMTDateTime);
+		/*@ref EE-8740_1  @date 2017-06-09 @author tyrion add-E */
+		//EE-8740 add bill huang 2017-05-21 - end
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(lstrProcessID, variables);
+		String lstrProcessInstanceID = processInstance.getProcessInstanceId();
+		/*@ref EE-8740_1  @date 2017-06-09 @author tyrion add-S */
+		TaskService taskService = processEngine.getTaskService();
+		TaskQuery taskQuery = taskService.createTaskQuery().executionId(lstrProcessInstanceID);
+	    Task task=taskQuery.singleResult();
+	    String SLACreateTime = DateTimeUtils.date2String(task.getCreateTime());
+	    runtimeService.setVariable(lstrProcessInstanceID, SLAVariables.SLACreateTime, SLACreateTime);
+	    /*@ref EE-8740_1  @date 2017-06-09 @author tyrion add-E */
+		insertInboxVariable(variables, lstrProcessInstanceID);
+
+		return processInstance.getProcessInstanceId();
+	}
