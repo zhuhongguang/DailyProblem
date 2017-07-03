@@ -21,7 +21,7 @@
 <body>
 <form>
 <input type="text" id="count"></input>
-<input name="_Sel_CheckBox" onchange="startCount(this)" type="checkbox" value="0">
+<input name="_Sel_CheckBox" onclick="startCount(this)" type="checkbox" value="0">
 </form>
 </body>
 </html>
