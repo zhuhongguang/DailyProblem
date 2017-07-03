@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>test</title>
+
+<script type="text/javascript">
+  var num=0;
+  function startCount(obj) {
+    document.getElementById('count').value=num;
+	if(obj.checked){
+    num=num+1;
+	}
+	else{
+	num=num-1;
+	}
+  }
+  
+</script>
+</head>
+<body>
+<form>
+<input type="text" id="count"></input>
+<input name="_Sel_CheckBox" onchange="startCount(this)" type="checkbox" value="0">
+</form>
+</body>
+</html>
