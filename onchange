@@ -25,3 +25,4 @@
 </form>
 </body>
 </html>
+使用onclick会导致计数错误，解决方法是使用onchange
