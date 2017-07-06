@@ -41,3 +41,6 @@ public static String startBGFlow(Map<String, String> map) throws Exception {
 
 		return processInstance.getProcessInstanceId();
 	}
+刚开始页面上显示的是这个时间String lstrCurrentGMTDateTime = DateTimeUtils.getCurrentGMTDateTimeString();这个和流程启动时间会有细微的差距，
+改动后，思路是这样的，先启动流程，然后通过task.getCreateTime()得到task的创建实际，之后通过
+runtimeService.setVariable(lstrProcessInstanceID, SLAVariables.SLACreateTime, SLACreateTime)
